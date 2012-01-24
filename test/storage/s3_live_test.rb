@@ -106,10 +106,14 @@ unless ENV["S3_BUCKET"].blank?
                       :bucket => ENV["S3_BUCKET"],
                       :s3_credentials => File.new(File.join(File.dirname(__FILE__), "..", "fixtures", "s3.yml"))
 
-        Dummy.delete_all
-        @dummy = Dummy.new
-        @dummy.avatar = File.new(File.join(File.dirname(__FILE__), '..', 'fixtures', 'question?mark.png'), 'rb')
-        @dummy.save
+        require 'rbconfig'
+        is_windows = (RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/)
+        if !is_windows
+          Dummy.delete_all
+          @dummy = Dummy.new
+          @dummy.avatar = File.new(File.join(File.dirname(__FILE__), '..', 'fixtures', 'question?mark.png'), 'rb')
+          @dummy.save
+        end
       end
 
       should "return an unescaped version for path" do
